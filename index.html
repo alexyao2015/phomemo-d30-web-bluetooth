@@ -62,14 +62,24 @@
 								type="number"
 								step="1"
 								min="1"
-								value="48"
+								value="17"
 								size="10"
 								class="form-control flex-grow-0"
 								style="width: 4rem"
 								id="inputFontSize"
 							/>
 							<span class="input-group-text">px</span>
+							<button 
+								type="button" 
+								class="btn btn-outline-secondary ms-2" 
+								id="btnOrientation" 
+								data-orientation="horizontal"
+							>
+								Horizontal
+							</button>
 						</div>
+						<label for="inputRepeatCount" class="form-label">Repeat Count</label>
+						<input type="number" class="form-control mb-2" id="inputRepeatCount" value="20" min="1">
 						<label for="inputText" class="form-label">Text to print</label>
 						<textarea class="form-control" id="inputText">Hello world</textarea>
 					</div>

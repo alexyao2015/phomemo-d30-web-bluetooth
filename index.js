@@ -27,8 +27,16 @@ const updateLabelSize = (canvas) => {
 const updateCanvasText = (canvas) => {
 	const text = $("#inputText").value;
 	const fontSize = $("#inputFontSize").valueAsNumber;
+	const repeatCount = $("#inputRepeatCount").valueAsNumber || 1;
+	const isVertical = $("#btnOrientation").dataset.orientation === "vertical";
+	const rotation = isVertical ? Math.PI / 2 : 0;
+
 	if (isNaN(fontSize)) {
 		handleError("font size invalid");
+		return;
+	}
+	if (isNaN(repeatCount) || repeatCount < 1) {
+		handleError("repeat count must be a positive number");
 		return;
 	}
 
@@ -36,23 +44,43 @@ const updateCanvasText = (canvas) => {
 	ctx.fillStyle = "#fff";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+	// Save the current context state
+	ctx.save();
+
+	// Move to center, rotate, then move back
 	ctx.translate(canvas.width / 2, canvas.height / 2);
-	ctx.rotate(Math.PI / 2);
+	ctx.rotate(rotation);
 
 	ctx.fillStyle = "#000";
 	ctx.textAlign = "center";
-	ctx.textBaseline = "top";
-	drawText(ctx, text, {
-		x: -canvas.height / 2,
-		y: -canvas.width / 2,
-		width: canvas.height,
-		height: canvas.width,
+	ctx.textBaseline = "middle";
+
+	// Add newline if repeating and doesn't end with one
+	let processedText = text;
+	if (repeatCount > 1 && !text.endsWith("\n")) {
+		processedText = text + "\n";
+	}
+
+	// Repeat text and remove trailing newline from final result
+	const repeatedText = processedText.repeat(repeatCount).replace(/\n$/, "");
+
+	// Calculate dimensions based on orientation
+	const textWidth = isVertical ? canvas.height : canvas.width;
+	const textHeight = isVertical ? canvas.width : canvas.height;
+
+	drawText(ctx, repeatedText, {
+		x: -textWidth / 2,
+		y: -textHeight / 2,
+		width: textWidth,
+		height: textHeight,
 		font: "sans-serif",
 		fontSize,
+		align: "center",
+		vAlign: "middle",
 	});
 
-	ctx.rotate(-Math.PI / 2);
-	ctx.translate(-canvas.width / 2, -canvas.height / 2);
+	// Restore the context to its original state
+	ctx.restore();
 };
 
 const updateCanvasBarcode = (canvas) => {
@@ -102,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	);
 	updateLabelSize(canvas);
 
-	$all("#inputText, #inputFontSize").forEach((e) =>
+	$all("#inputText, #inputFontSize, #inputRepeatCount").forEach((e) =>
 		e.addEventListener("input", () => updateCanvasText(canvas))
 	);
 	updateCanvasText(canvas);
@@ -121,5 +149,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			.then((service) => service.getCharacteristic("0000ff02-0000-1000-8000-00805f9b34fb"))
 			.then((char) => printCanvas(char, canvas))
 			.catch(handleError);
+	});
+
+	$("#btnOrientation").addEventListener("click", (e) => {
+		const btn = e.currentTarget;
+		const isVertical = btn.dataset.orientation === "horizontal";
+		btn.dataset.orientation = isVertical ? "vertical" : "horizontal";
+		btn.textContent = isVertical ? "Vertical" : "Horizontal";
+		updateCanvasText(canvas);
 	});
 });
