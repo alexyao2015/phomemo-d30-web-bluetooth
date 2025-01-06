@@ -71,6 +71,22 @@
 							<span class="input-group-text">px</span>
 							<button 
 								type="button" 
+								class="btn btn-outline-secondary ms-2 active" 
+								id="btnFontWeight" 
+								data-weight="700"
+							>
+								<strong>B</strong>
+							</button>
+							<button 
+								type="button" 
+								class="btn btn-outline-secondary ms-2" 
+								id="btnUppercase" 
+								data-uppercase="false"
+							>
+								ABC
+							</button>
+							<button 
+								type="button" 
 								class="btn btn-outline-secondary ms-2" 
 								id="btnOrientation" 
 								data-orientation="horizontal"
@@ -81,7 +97,16 @@
 						<label for="inputRepeatCount" class="form-label">Repeat Count</label>
 						<input type="number" class="form-control mb-2" id="inputRepeatCount" value="20" min="1">
 						<label for="inputText" class="form-label">Text to print</label>
-						<textarea class="form-control" id="inputText">Hello world</textarea>
+						<div class="input-group">
+							<textarea class="form-control" id="inputText"></textarea>
+							<button 
+								type="button" 
+								class="btn btn-outline-secondary" 
+								id="btnClearText"
+							>
+								Clear
+							</button>
+						</div>
 					</div>
 					<div
 						class="tab-pane"

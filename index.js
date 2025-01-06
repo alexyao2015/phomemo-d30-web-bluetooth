@@ -27,8 +27,10 @@ const updateLabelSize = (canvas) => {
 const updateCanvasText = (canvas) => {
 	const text = $("#inputText").value;
 	const fontSize = $("#inputFontSize").valueAsNumber;
+	const fontWeight = $("#btnFontWeight").dataset.weight;
 	const repeatCount = $("#inputRepeatCount").valueAsNumber || 1;
 	const isVertical = $("#btnOrientation").dataset.orientation === "vertical";
+	const isUppercase = $("#btnUppercase").dataset.uppercase === "true";
 	const rotation = isVertical ? Math.PI / 2 : 0;
 
 	if (isNaN(fontSize)) {
@@ -55,13 +57,14 @@ const updateCanvasText = (canvas) => {
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
 
-	// Add newline if repeating and doesn't end with one
+	// Process text (uppercase if needed, add newlines, repeat)
 	let processedText = text;
-	if (repeatCount > 1 && !text.endsWith("\n")) {
-		processedText = text + "\n";
+	if (isUppercase) {
+		processedText = processedText.toUpperCase();
 	}
-
-	// Repeat text and remove trailing newline from final result
+	if (repeatCount > 1 && !processedText.endsWith("\n")) {
+		processedText = processedText + "\n";
+	}
 	const repeatedText = processedText.repeat(repeatCount).replace(/\n$/, "");
 
 	// Calculate dimensions based on orientation
@@ -75,6 +78,7 @@ const updateCanvasText = (canvas) => {
 		height: textHeight,
 		font: "sans-serif",
 		fontSize,
+		fontWeight: fontWeight.toString(),
 		align: "center",
 		vAlign: "middle",
 	});
@@ -158,4 +162,27 @@ document.addEventListener("DOMContentLoaded", function () {
 		btn.textContent = isVertical ? "Vertical" : "Horizontal";
 		updateCanvasText(canvas);
 	});
+
+	$("#btnFontWeight").addEventListener("click", (e) => {
+		const btn = e.currentTarget;
+		const isBold = btn.dataset.weight === "400";
+		btn.dataset.weight = isBold ? "700" : "400";
+		btn.classList.toggle("active", isBold);
+		updateCanvasText(canvas);
+	});
+
+	$("#btnClearText").addEventListener("click", () => {
+		$("#inputText").value = "";
+		updateCanvasText(canvas);
+	});
+
+	$("#btnUppercase").addEventListener("click", (e) => {
+		const btn = e.currentTarget;
+		const isUppercase = btn.dataset.uppercase === "false";
+		btn.dataset.uppercase = isUppercase ? "true" : "false";
+		btn.classList.toggle("active", isUppercase);
+		updateCanvasText(canvas);
+	});
+
+	$("#inputText").addEventListener("input", () => updateCanvasText(canvas));
 });
