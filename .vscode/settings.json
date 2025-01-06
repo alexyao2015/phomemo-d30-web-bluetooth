@@ -1,3 +1,9 @@
 {
-	"livePreview.defaultPreviewPath": "/index.html"
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
