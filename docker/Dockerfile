@@ -1,4 +1,7 @@
 FROM node:lts AS build
+ARG BASE_URL
+
+ENV BASE_URL=${BASE_URL}
 
 WORKDIR /app
 

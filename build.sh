@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Build the Docker image with a temporary name
-docker build -t temp-build --target build -f docker/Dockerfile .
+docker build -t temp-build --target build -f docker/Dockerfile --build-arg BASE_URL=${BASE_URL:-/} .
 
 # Create a temporary container from the image
 CONTAINER_ID=$(docker create temp-build)
